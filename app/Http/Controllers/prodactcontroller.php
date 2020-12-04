@@ -29,7 +29,7 @@ class prodactcontroller extends Controller
     {
         $valided = Validator::make($request->all(),[
             'name'=>'required',
-            'url_img'=>'required',
+            // 'url_img'=>'required',
             'description'=>'required',
             'characteristic'=>'required',
             'quantity'=>'required'
@@ -41,12 +41,20 @@ class prodactcontroller extends Controller
         $prodact = new Produit();
         $prodact->categories_id =$request->categories_id;
         $prodact->name = $request->name;
-        $prodact->url_img = $request->url_img;
+        // if($request->hashFile("url_img")){
+        //     $file= $prodact->url_img = $request->file('url_img');
+        //     $extension =$file->getClientOriginalExtension();
+        //     $filename = time().'.'.$extension;
+        //     $file->move("images/products",$filename);
+        //     $prodact->url_img = $filename;
+        //     dd($prodact->url_img);
+        // }
+        $prodact->url_img = "url_img";
         $prodact->description = $request->description;
         $prodact->characteristic = $request->characteristic;
         $prodact->quantity = $request->quantity;
         $prodact->save();
-        return response()->json(['message'=>'Prodact created is successfully']);
+        return response()->json(['message'=>'Product created is successfully']);
     }
 
     /**

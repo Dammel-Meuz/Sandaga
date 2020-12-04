@@ -13,6 +13,7 @@ Vue.use(VueRouter);
 
 import prodact from './components/prodact.vue'
 import boutik from './components/boutik.vue'
+import dashboard from './components/dashboard.vue'
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
     const routes = [
         {
@@ -25,6 +26,10 @@ import boutik from './components/boutik.vue'
         {
             path:'/boutik',
             component:boutik
+        },
+        {
+            path:'/dashboard',
+            component:dashboard
         }
 
     ];

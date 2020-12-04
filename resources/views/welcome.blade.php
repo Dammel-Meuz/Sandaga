@@ -23,6 +23,10 @@
                 <li class="nav-item">
                   <router-link to="/boutik" class="nav-link">Boutiques</router-link>
                 </li>
+                <li class="nav-item">
+
+                    <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+                  </li>
 
               </ul>
             </div>

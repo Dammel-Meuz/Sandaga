@@ -4,7 +4,7 @@
 
     <div class="container pt-5">
     <div class="row">
-      <div class="card col-md-3 mx-4" style="width: 15rem; height: 20rem" v-for="prodact in prodacts" :key="prodact.id">
+      <div class="card col-md-3 mx-4 my-4" style="width: 15rem; height: 20rem" v-for="prodact in prodacts" :key="prodact.id">
         <img :src="'img/img22.jpg'" class="card-img-top" alt="" />
         <div class="card-body">
           <small class="card-title pt-1">{{ prodact.name }}</small>
