@@ -14,7 +14,12 @@ class AuthController extends Controller
         $valided = Validator::make($request->all(),[
 
             'email'=>'required|email',
-            'password'=>'required'
+            'password'=>'required',
+            'phone'=>'required|integer',
+            'ispro'=>'required|boolean',
+            'isadmin'=>'required|boolean',
+            'name'=>'required',
+            'local'=>'required'
         ]);
 
         if($valided->fails()){
@@ -25,7 +30,10 @@ class AuthController extends Controller
         $user->ispro = $request->ispro;
         $user->isadmin = $request->isadmin;
         $user->email = $request->email;
+        $user->name = $request->name;
+        $user->phone = $request->phone;
         $user->password = $request->password;
+        $user->local = $request->local;
         $user->save();
 
         return response()->json([

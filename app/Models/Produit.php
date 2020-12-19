@@ -11,15 +11,22 @@ class Produit extends Model
 
     protected $fillable = [
         'categories_id',
+        'users_id',
         'name',
-        'url_img',
+        'image',
         'description',
         'characteristic',
         'quantity',
+        'prix',
     ];
 
     public function category()
     {
         return $this->belongsTo('App\Models\Category');
+    }
+
+    public function users()
+    {
+        return $this->belongsTo('App\Models\User');
     }
 }

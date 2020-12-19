@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+//use Dotenv\Util\Str;
 use App\Models\Produit;
+use App\Traits\UploadTrait;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class prodactcontroller extends Controller
@@ -15,7 +20,15 @@ class prodactcontroller extends Controller
      */
     public function index()
     {
-     $prodact= Produit::all();
+    $prodact= Produit::orderBy('created_at','DESC')->paginate(10);
+    //$prodact = Produit::all();
+
+     return response()->json($prodact, 200);
+    }
+    public function indexlistproduit()
+    {
+    //$prodact= Produit::orderBy('created_at','DESC')->paginate(6);
+    $prodact = Produit::all();
 
      return response()->json($prodact, 200);
     }
@@ -29,33 +42,80 @@ class prodactcontroller extends Controller
     {
         $valided = Validator::make($request->all(),[
             'name'=>'required',
-            // 'url_img'=>'required',
+            'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description'=>'required',
             'characteristic'=>'required',
-            'quantity'=>'required'
+            'quantity'=>'required',
+            'prix'=>'required|integer'
 
         ]);
         if($valided->fails()){
-            return response()->json(['message'=>'Bad request']);
+            return response()->json(['message'=>'Bad Request']);
         }
         $prodact = new Produit();
-        $prodact->categories_id =$request->categories_id;
-        $prodact->name = $request->name;
-        // if($request->hashFile("url_img")){
-        //     $file= $prodact->url_img = $request->file('url_img');
-        //     $extension =$file->getClientOriginalExtension();
-        //     $filename = time().'.'.$extension;
-        //     $file->move("images/products",$filename);
-        //     $prodact->url_img = $filename;
-        //     dd($prodact->url_img);
+        $prodact->categories_id =$request->input('categories_id');
+        $prodact->name = $request->input('name');
+        $prodact->description = $request->input('description');
+        $prodact->characteristic = $request->input('characteristic');
+        $prodact->quantity = $request->input('quantity');
+        $prodact->prix = $request->input('prix');
+        //dd($prodact);
+
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $name);
+            $prodact->image = $name;
+
+           // dd($prodact);
+
+        }else{
+            return response()->json(['message'=>'bad request']);
+
+        }
+        //dd($prodact);
+
+        // if ($request->hasFile('image')) {
+        //     // Get image file
+        //     $image = $request->File('image');
+        //     // Make a image name based on user name and current timestamp
+        //     $extension = $image->getClientOriginalExtension();
+        //     $filename = time() . '.' . $extension;
+        //    // $name = Str::slug($request->input('name')).'_'.time();
+        //     // Define folder path
+        //     $folder = '/uploads/images/';
+        //     // Make a file path where image will be stored [ folder path + file name + file extension]
+        //     //$filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+        //     // Upload image
+        //     $image->move($image, $folder, 'public', $filename);
+        //     // Set user profile image path in database to filePath
+        //     $prodact->image = $filename;
         // }
-        $prodact->url_img = "url_img";
-        $prodact->description = $request->description;
-        $prodact->characteristic = $request->characteristic;
-        $prodact->quantity = $request->quantity;
+
+
+
+        //else{
+        //     $prodact->image = 'url';
+        // }
+
+        // if ($request->hasFile('image')){
+        //     $file = $request->file('image');
+        //     $extension = $file->getClientOriginalExtension();
+        //     $filename = time() . '.' . $extension;
+        //     $file->move(public_path('image'),$filename);
+        //     $prodact->image = $filename;
+        // }
+
+        // else {
+        //     return response()->json(['message'=>'bad request']);
+        // }
+
         $prodact->save();
         return response()->json(['message'=>'Product created is successfully']);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -87,7 +147,9 @@ class prodactcontroller extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Produit::find($id);
+
+        return response()->json($product);
     }
 
     /**
@@ -99,7 +161,12 @@ class prodactcontroller extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product  = Produit::where('id',$request->id)->update([
+
+        ]);
+        $product->update($request->all());
+
+        return Response()->json(['message'=>'update successfull']);
     }
 
     /**
@@ -110,6 +177,18 @@ class prodactcontroller extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Produit::find($id);
+        if ($product->delete()) {
+            return $this->refresh();
+        }else{
+            return response()->json(['error' =>'Destroy method has failed'],425);
+
+        }
+    }
+
+    private function refresh(){
+        $prodact = Produit::all();
+
+        return response()->json($prodact, 200);
     }
 }

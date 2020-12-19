@@ -22,8 +22,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/creat',[prodactcontroller::class,'create']);
+Route::post('/addUser',[AuthController::class,'Register']);
 Route::post('/creatcateg',[CategoryController::class,'createcategorie']);
 Route::get('/index',[prodactcontroller::class,'index']);
+Route::get('/indexlistproduit',[prodactcontroller::class,'indexlistproduit']);
+Route::get('/editproduit/{id}',[prodactcontroller::class,'edit']);
+Route::delete('/produit/{id}',[prodactcontroller::class,'destroy']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
